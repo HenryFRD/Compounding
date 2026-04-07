@@ -1,0 +1,47 @@
+def calculate():
+    try:
+        principal = float(principal_entry.get())
+        rate = float(rate_entry.get()) / 100
+        days = int(days_entry.get())
+        monthly_addition = float(monthly_entry.get())
+
+        values = []
+        amount = principal
+
+        for day in range(days + 1):
+            values.append(amount)
+
+            # add monthly contribution every 30 days, except day 0
+            if day > 0 and day % 30 == 0:
+                amount += monthly_addition
+
+            # apply one day of interest
+            amount *= (1 + rate / 365)
+
+        final_amount = values[-1]
+
+        # ✅ NEW: total contributions
+        total_contributions = principal + (monthly_addition * (days // 30))
+
+        # ✅ FIXED: interest calculation
+        interest_earned = final_amount - total_contributions
+
+        result_label.config(
+            text=(
+                f"Final amount: £{final_amount:.2f}\n"
+                f"Total contributions: £{total_contributions:.2f}\n"
+                f"Interest earned: £{interest_earned:.2f}"
+            )
+        )
+
+        plt.plot(range(days + 1), values)
+        plt.xlabel("Days")
+        plt.ylabel("Amount (£)")
+        plt.title("Daily Compounding with Monthly Contributions")
+        plt.xticks(range(0, days + 1, max(1, days // 10)))
+        plt.grid(True)
+        plt.ticklabel_format(style='plain', axis='y')
+        plt.show()
+
+    except ValueError:
+        messagebox.showerror("Input error", "Please enter valid numbers.")
